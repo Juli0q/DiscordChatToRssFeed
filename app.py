@@ -12,12 +12,12 @@ from feedgen.feed import FeedGenerator
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 FEED_CHANNELS_ENV = os.getenv('FEED_CHANNELS')
 DEFAULT_MAIL = os.getenv('DEFAULT_MAIL')
-BASE_DOMAIN = os.getenv('BASE_DOMAIN')
+BASE_DOMAIN = os.getenv('BASE_URL')
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = int(os.getenv('PORT', '5000'))
 
 if not DISCORD_TOKEN or not FEED_CHANNELS_ENV or not DEFAULT_MAIL or not BASE_DOMAIN:
-    print('Please set the DISCORD_TOKEN, FEED_CHANNELS, DEFAULT_MAIL, BASE_DOMAIN environment variables.')
+    print('Please set the DISCORD_TOKEN, FEED_CHANNELS, DEFAULT_MAIL, BASE_URL environment variables.')
     exit(1)
 
 # Parse FEED_CHANNELS environment variable into a dictionary {feed_name: channel_id}
