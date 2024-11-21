@@ -7,7 +7,7 @@ This is a simple script that will take a Discord chat and convert it to an RSS f
 - `DISCORD_TOKEN` - The Discord bot token.
 - `DEFAULT_MAIL` - The email address to use for every author in the feed. RSS needs a Email address for the author field.
 - `BASE_URL` - The base URL for the RSS feed. This is used to generate the links for the feed.
-- `PORT` - The port to run the server on. Default is 3000.
+- `PORT` - The port to run the server on. Default is 5000.
 - `HOST` - The host to run the server on. Default is 0.0.0.0.
 
 ## Usage
@@ -28,7 +28,7 @@ services:
       - DEFAULT_MAIL="<Email>"
       - BASE_URL="<URL>"
     ports:
-      - "3000:3000"
+      - "3000:5000"
 ```
 
 With this example the 2 feeds will be available at:
