@@ -3,7 +3,7 @@
 This is a simple script that will take a Discord chat and convert it to an RSS feed.
 
 ## Environment Variables
-- `FEED_CHANNELS` - A comma separated list of channel IDs and their names. The format is `channel_id:channel_name`. For example, `general=<ChannelID>,general2=<ChannelID>`.
+- `FEED_CHANNELS` - A comma separated list of channel IDs and their names. The format is `channel_id=channel_name`. For example, `general=<ChannelID>,general2=<ChannelID>`.
 - `DISCORD_TOKEN` - The Discord bot token.
 - `DEFAULT_MAIL` - The email address to use for every author in the feed. RSS needs a Email address for the author field.
 - `BASE_URL` - The base URL for the RSS feed. This is used to generate the links for the feed.
