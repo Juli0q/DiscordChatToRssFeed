@@ -11,13 +11,12 @@ from feedgen.feed import FeedGenerator
 # Load environment variables
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 FEED_CHANNELS_ENV = os.getenv('FEED_CHANNELS')
-DEFAULT_MAIL = os.getenv('DEFAULT_MAIL')
 BASE_DOMAIN = os.getenv('BASE_URL')
 HOST = os.getenv('HOST', '0.0.0.0')
 PORT = int(os.getenv('PORT', '5000'))
 
-if not DISCORD_TOKEN or not FEED_CHANNELS_ENV or not DEFAULT_MAIL or not BASE_DOMAIN:
-    print('Please set the DISCORD_TOKEN, FEED_CHANNELS, DEFAULT_MAIL, BASE_URL environment variables.')
+if not DISCORD_TOKEN or not FEED_CHANNELS_ENV or not BASE_DOMAIN:
+    print('Please set the DISCORD_TOKEN, FEED_CHANNELS, BASE_URL environment variables.')
     exit(1)
 
 # Parse FEED_CHANNELS environment variable into a dictionary {feed_name: channel_id}
@@ -104,9 +103,9 @@ def rss_feed(feed_name):
     for msg in msgs:
         fe = fg.add_entry()
         fe.title(msg['title'])
-        fe.description(msg['content'])
+        fe.content(msg['content'])
         fe.pubDate(msg['pubDate'])
-        fe.author(name=msg['author'], email=DEFAULT_MAIL)
+        fe.dc_creator(name=msg['author'])
 
     rssfeed = fg.rss_str(pretty=True)
     return Response(rssfeed, mimetype='application/rss+xml')
