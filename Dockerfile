@@ -1,6 +1,11 @@
 # Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
+# Install supervisord
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    supervisor && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set the working directory in the container
 WORKDIR /app
 
@@ -16,8 +21,11 @@ COPY . .
 # Expose the port that the app runs on
 EXPOSE 5000
 
+# Copy supervisord configuration
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Define environment variables
 ENV PYTHONUNBUFFERED=1
 
 # Command to run when starting the container
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
