@@ -1,4 +1,3 @@
-# bot.py
 import os
 import asyncio
 import sqlite3
@@ -33,7 +32,13 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 conn = sqlite3.connect('messages.db')
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS messages
-             (feed_name TEXT, title TEXT, content TEXT, link TEXT, pubDate TEXT, author TEXT)''')
+             (message_id INTEGER PRIMARY KEY,
+              feed_name TEXT,
+              title TEXT,
+              content TEXT,
+              link TEXT,
+              pubDate TEXT,
+              author TEXT)''')
 conn.commit()
 
 def add_message_to_db(feed_name, message):
@@ -49,9 +54,16 @@ def add_message_to_db(feed_name, message):
     link = f'https://discordapp.com/channels/{message.guild.id}/{message.channel.id}/{message.id}'
     pubDate = message.created_at.isoformat()
     author = message.author.name.capitalize()
+    message_id = message.id
 
-    c.execute("INSERT INTO messages (feed_name, title, content, link, pubDate, author) VALUES (?, ?, ?, ?, ?, ?)",
-              (feed_name, title, content, link, pubDate, author))
+    c.execute('''INSERT OR REPLACE INTO messages
+                 (message_id, feed_name, title, content, link, pubDate, author)
+                 VALUES (?, ?, ?, ?, ?, ?, ?)''',
+              (message_id, feed_name, title, content, link, pubDate, author))
+    conn.commit()
+
+def delete_message_from_db(message_id):
+    c.execute("DELETE FROM messages WHERE message_id = ?", (message_id,))
     conn.commit()
 
 @bot.event
@@ -74,6 +86,20 @@ async def on_message(message):
     for feed_name, channel_id in FEED_CHANNELS.items():
         if message.channel.id == channel_id and not message.author.bot:
             add_message_to_db(feed_name, message)
+            break  # No need to check other feeds
+
+@bot.event
+async def on_message_edit(before, after):
+    for feed_name, channel_id in FEED_CHANNELS.items():
+        if after.channel.id == channel_id and not after.author.bot:
+            add_message_to_db(feed_name, after)
+            break  # No need to check other feeds
+
+@bot.event
+async def on_message_delete(message):
+    for feed_name, channel_id in FEED_CHANNELS.items():
+        if message.channel.id == channel_id and not message.author.bot:
+            delete_message_from_db(message.id)
             break  # No need to check other feeds
 
 if __name__ == "__main__":
